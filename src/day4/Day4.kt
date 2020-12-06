@@ -27,7 +27,7 @@ class Passport {
     }
 }
 
-private fun matchesRegex(value: String?, regex: Regex): Boolean  = value?.let { regex.matches(it) } ?: false
+private fun matchesRegex(value: String?, regex: Regex): Boolean = value?.let { regex.matches(it) } ?: false
 
 fun main() {
     val lines = readFileToLines("src/day4/resources/Day4.txt")
