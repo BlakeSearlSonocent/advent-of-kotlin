@@ -15,25 +15,33 @@ fun parse(lines: List<String>): Map<String, List<Pair<String, Int>>> {
     }
 }
 
-fun getContainedBags(map: Map<String, List<Pair<String, Int>>>, containingBags: MutableList<String>, startBag: String, thisBag: String = startBag): Set<String> {
+fun getContainingBags (map: Map<String, List<Pair<String, Int>>>, containingBags: MutableList<String>, startBag: String, thisBag: String = startBag): Set<String> {
     val containedBagsAndCounts = map[thisBag] ?: error("These shouldn't be null!")
 
     containedBagsAndCounts.map { it.first }
-        .forEach { thisBag ->
-            if (thisBag == "shiny gold") containingBags.add(startBag)
-            else getContainedBags(map, containingBags, startBag, thisBag)
+        .forEach { bag ->
+            if (bag == "shiny gold") containingBags.add(startBag)
+            else getContainingBags(map, containingBags, startBag, bag)
         }
 
     return containingBags.toSet()
+}
+
+fun getContainedBag (map: Map<String, List<Pair<String, Int>>>, thisBag: String): Int {
+    val containedBagsAndCounts = map[thisBag] ?: error("These shouldn't be null!")
+
+    return containedBagsAndCounts.sumBy { it.second * (1 + getContainedBag(map, it.first)) }
 }
 
 
 fun main() {
     val input = readFileToLines("src/day7/resources/Day7.txt")
     val parsed = parse(input)
-    println(parsed.map { getContainedBags(parsed, mutableListOf(), it.key) }
+    println(parsed.map { getContainingBags(parsed, mutableListOf(), it.key) }
         .flatten()
         .size)
+
+    println(getContainedBag(parsed, "shiny gold"))
 }
 
 
