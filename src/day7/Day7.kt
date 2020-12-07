@@ -5,7 +5,7 @@ import util.readFileToLines
 private val REGEX_LINES = """(\w+ \w+) bags contain (.*)""".toRegex()
 private val REGEX_BAG = """(\d+) (\w+ \w+) bags?""".toRegex()
 
-data class BagWithCount (val colour: String, val count: Int)
+data class BagWithCount(val bag: String, val count: Int)
 
 fun parse(lines: List<String>): Map<String, List<BagWithCount>> {
     return lines.associate { l ->
@@ -17,12 +17,10 @@ fun parse(lines: List<String>): Map<String, List<BagWithCount>> {
     }
 }
 
-
-
-fun getContainingBags (map: Map<String, List<BagWithCount>>, containingBags: MutableList<String>, startBag: String, thisBag: String = startBag): Set<String> {
+fun getContainingBags(map: Map<String, List<BagWithCount>>, containingBags: MutableList<String>, startBag: String, thisBag: String = startBag): Set<String> {
     val containedBagsAndCounts = map[thisBag] ?: error("These shouldn't be null!")
 
-    containedBagsAndCounts.map { it.colour }
+    containedBagsAndCounts.map { it.bag }
         .forEach { bag ->
             if (bag == "shiny gold") containingBags.add(startBag)
             else getContainingBags(map, containingBags, startBag, bag)
@@ -31,12 +29,10 @@ fun getContainingBags (map: Map<String, List<BagWithCount>>, containingBags: Mut
     return containingBags.toSet()
 }
 
-fun getContainedBagCount (map: Map<String, List<BagWithCount>>, thisBag: String): Int {
+fun getContainedBagCount(map: Map<String, List<BagWithCount>>, thisBag: String): Int {
     val containedBagsAndCounts = map[thisBag] ?: error("These shouldn't be null!")
-
-    return containedBagsAndCounts.sumBy { it.count * (1 + getContainedBagCount(map, it.colour)) }
+    return containedBagsAndCounts.sumBy { it.count * (1 + getContainedBagCount(map, it.bag)) }
 }
-
 
 fun main() {
     val input = readFileToLines("src/day7/resources/Day7.txt")
