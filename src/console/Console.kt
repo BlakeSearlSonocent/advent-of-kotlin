@@ -30,14 +30,36 @@ class Console(input: List<String>) {
         }
     }
 
-    fun clear() {
-        memory = emptyList()
+    fun resetState() {
         pointer = 0
         acc = 0
         visitedPoints.clear()
     }
 
-    class Instruction(private val opCode: OpCode, private val arg: Int, private val console: Console) {
+    fun runCorruptionFix() {
+        memory.forEach { instruction ->
+            var oldOpCode = instruction.opCode
+            if (oldOpCode == OpCode.NOP || oldOpCode == OpCode.JMP) {
+
+                when (oldOpCode) {
+                    OpCode.NOP -> instruction.opCode = OpCode.JMP
+                    OpCode.JMP -> instruction.opCode = OpCode.NOP
+                }
+
+                if (run()) {
+                    println("Corruption fix found, acc is $acc")
+                    return
+                } else {
+                    resetState()
+                    instruction.opCode = oldOpCode
+                }
+            }
+        }
+
+        println("No corruption fix found")
+    }
+
+    class Instruction(var opCode: OpCode, private val arg: Int, private val console: Console) {
         fun performInstruction() = opCode.doOp(arg, console)
     }
 

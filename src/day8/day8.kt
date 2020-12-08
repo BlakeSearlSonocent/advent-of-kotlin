@@ -12,25 +12,7 @@ fun main() {
     println("Part one: ${console.acc}")
 
     //Part two
-    for (i in input.indices) {
-        val inputCopy = listOf(input).flatten().toMutableList()
-        val op = inputCopy[i].split(" ").first()
-
-        if (op == "nop") {
-            val replace = inputCopy[i].replace("nop", "jmp")
-            inputCopy[i] = replace
-            val testConsole = Console(inputCopy)
-            if (testConsole.run()) {
-                println(testConsole.acc)
-            }
-        }
-        else if (op == "jmp") {
-            val replace = inputCopy[i].replace("jmp", "nop")
-            inputCopy[i] = replace
-            val testConsole = Console(inputCopy)
-            if (testConsole.run()) {
-                println(testConsole.acc)
-            }
-        }
-    }
+    console.resetState()
+    print("Part two: ")
+    console.runCorruptionFix()
 }
