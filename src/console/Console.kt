@@ -13,25 +13,21 @@ class Console(input: List<String>) {
     private fun writeToMemoryFromInput(input: List<String>): List<Instruction> {
         return input.map { it.split(" ") }
             .map {
-                val opCode = OpCode.from(it[0])!!
+                val opCode = OpCode.from(it[0].toUpperCase())
                 val arg = it[1].toInt()
                 Instruction(opCode, arg, this)
             }
     }
 
     fun run(): Boolean {
-        return runNextInstruction()
-    }
+        while (true) {
+            if (visitedPoints.contains(pointer)) return false
+            if (pointer == memory.size) return true
 
-    private fun runNextInstruction(): Boolean {
-        if (visitedPoints.contains(pointer)) return false
-
-        if (pointer == memory.size) return true
-
-        visitedPoints.add(pointer)
-        val instruction = memory[pointer]
-        instruction.performInstruction()
-        return runNextInstruction()
+            visitedPoints.add(pointer)
+            val instruction = memory[pointer]
+            instruction.performInstruction()
+        }
     }
 
     fun clear() {
@@ -45,24 +41,24 @@ class Console(input: List<String>) {
         fun performInstruction() = opCode.doOp(arg, console)
     }
 
-    enum class OpCode(i: Int) {
-        nop(0) {
+    enum class OpCode {
+        NOP {
             override fun doOp(arg: Int, console: Console) {
                 console.pointer++
             }
         },
-        acc(1) {
+        ACC {
             override fun doOp(arg: Int, console: Console) {
                 console.acc += arg
                 console.pointer++
             }
         },
-        jmp(2) {
+        JMP {
             override fun doOp(arg: Int, console: Console) {
                 console.pointer += arg
             }
         },
-        err(99) {
+        ERR {
             override fun doOp(arg: Int, console: Console) {
                 println("We got a problem here!!!")
             }
@@ -71,7 +67,7 @@ class Console(input: List<String>) {
         abstract fun doOp(arg: Int, console: Console)
 
         companion object {
-            fun from(type: String) = values().find { it.name == type } ?: err
+            fun from(type: String) = values().find { it.name == type } ?: ERR
         }
     }
 }
