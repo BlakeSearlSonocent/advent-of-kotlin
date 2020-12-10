@@ -21,9 +21,8 @@ fun partOne(input: List<Long>): Int {
     return groupings[3]!! * groupings[1]!!
 }
 
-fun partTwo(input: MutableList<Long>): Long {
-    return noWaysFrom(0, input, mutableMapOf())
-}
+fun partTwo(input: MutableList<Long>) = noWaysFrom(0, input, mutableMapOf())
+
 
 fun noWaysFrom(i: Int, input: List<Long>, cachedNoWaysFrom: MutableMap<Int, Long>): Long {
     if (i == input.size - 1) return 1
