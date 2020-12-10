@@ -22,7 +22,6 @@ fun partOne(input: List<Long>): Int {
 }
 
 fun partTwo(input: MutableList<Long>): Long {
-    println(input)
     return noWaysFrom(0, input, mutableMapOf())
 }
 
