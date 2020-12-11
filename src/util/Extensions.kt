@@ -1,0 +1,1 @@
+operator fun Point.plus(second: Point): Point = Pair(this.first + second.first, this.second + second.second)

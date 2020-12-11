@@ -9,7 +9,6 @@ fun main() {
 
     println("Part one: ${partOne(input)}")
     println("Part two: ${partTwo(input)}")
-
 }
 
 fun partOne(input: List<Long>): Int {
@@ -22,7 +21,6 @@ fun partOne(input: List<Long>): Int {
 }
 
 fun partTwo(input: MutableList<Long>) = noWaysFrom(0, input, mutableMapOf())
-
 
 fun noWaysFrom(i: Int, input: List<Long>, cachedNoWaysFrom: MutableMap<Int, Long>): Long {
     if (i == input.size - 1) return 1
