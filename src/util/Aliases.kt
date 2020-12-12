@@ -1,1 +1,2 @@
-typealias Point = Pair<Int, Int>
+typealias P = Pair<Int, Int>
+typealias Vec = Pair<Int, Int>

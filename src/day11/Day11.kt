@@ -1,11 +1,12 @@
 package day11
 
-import Point
+import P
+import Vec
 import plus
 import util.readFileToLines
 
-val DIRECTIONS = listOf(Pair(-1, -1), Pair(-1, 0), Pair(-1, 1), Pair(0, -1), Pair(0, 1), Pair(1, -1), Pair(1, 0), Pair(1, 1))
-var GRID: MutableMap<Point, Char> = mutableMapOf()
+val DIRECTIONS = listOf(Vec(-1, -1), Vec(-1, 0), Vec(-1, 1), Vec(0, -1), Vec(0, 1), Vec(1, -1), Vec(1, 0), Vec(1, 1))
+var GRID: MutableMap<P, Char> = mutableMapOf()
 var HEIGHT = 0
 var WIDTH = 0
 
@@ -34,37 +35,30 @@ fun findStability(useImmediateNeighbours: Boolean = false, occupiedThreshold: In
     val mutated = GRID.toMutableMap()
 
     while (true) {
-        var changed = false
-
         for (point in now) {
             if (point.value == '.') continue
 
             val neighbours = getNeighbours(useImmediateNeighbours, point, now)
             val occupied = neighbours.count { it.value == '#' }
 
-            if (point.value == 'L' && occupied == 0) {
-                mutated[point.key] = '#'
-                changed = true
-            }
-
-            if (point.value == '#' && occupied >= occupiedThreshold) {
-                mutated[point.key] = 'L'
-                changed = true
+            when {
+                (point.value == 'L' && occupied==0) -> mutated[point.key] = '#'
+                (point.value == '#' && occupied >= occupiedThreshold) -> mutated[point.key] = 'L'
             }
         }
 
-        now = mutated.toMutableMap()
+        if (mutated == now) return mutated.count { it.value == '#' }
 
-        if (!changed) return mutated.count { it.value == '#' }
+        now = mutated.toMutableMap()
     }
 }
 
 private fun getNeighbours(
     useImmediateNeighbours: Boolean,
-    point: MutableMap.MutableEntry<Point, Char>,
-    now: MutableMap<Point, Char>
-): MutableMap<Point, Char> {
-    val neighbours = mutableMapOf<Point, Char>()
+    point: MutableMap.MutableEntry<P, Char>,
+    now: MutableMap<P, Char>
+): MutableMap<P, Char> {
+    val neighbours = mutableMapOf<P, Char>()
 
     for (direction in DIRECTIONS) {
         var testPointCoords = direction + point.key
