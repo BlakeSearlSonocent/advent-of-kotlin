@@ -13,54 +13,47 @@ fun main () {
     }
 
     val myTicket = input[1].split("\n")[1].split(",").map { it.toInt() }
-
-    val otherTickets = input[2].split("\n").drop(1).map { it.split(",").map { it.toInt() } }
+    val otherTickets = input[2].split("\n").drop(1).map { it.split(",").map { field -> field.toInt() } }
 
     println("Part one: ${partOne(rules, otherTickets)}")
-
-    partTwo(rules, myTicket, otherTickets)
+    println("Part two: ${partTwo(rules, myTicket, otherTickets)}")
 }
 
-fun partTwo(rules: List<Rule>, myTicket: List<Int>, otherTickets: List<List<Int>>) {
-    println(rules)
+fun partTwo(rules: List<Rule>, myTicket: List<Int>, otherTickets: List<List<Int>>): Long {
+    val validTickets = getValidTickets(otherTickets, rules)
+    val ruleToPossibleFields = getPossibleRulesForFields(rules, myTicket, validTickets)
+    val reduceRuleToFields = reduceRuleToFields(ruleToPossibleFields)
 
-    val validTickets = otherTickets.filter { ticket ->
-        println("Checking $ticket")
-        var valid = true
-        ticket.forEach { field ->
-            var fieldInRule = false
-            rules.forEach { rule ->
-                if (field in rule.range1 || field in rule.range2) fieldInRule = true
-            }
+    val departureIndices = reduceRuleToFields.filter { it.first.name.startsWith("departure") }.map { it.second.first() }
+    return myTicket.map { it.toLong() }.filterIndexed { index, _ -> departureIndices.contains(index) }.reduce { acc, i -> acc * i }
+}
 
-            if (!fieldInRule) valid = false
-        }
-        valid
-    }
-
-    println(validTickets)
-
-    val ruleToPossibleFields = rules.map { rule ->
+private fun getPossibleRulesForFields(
+    rules: List<Rule>,
+    myTicket: List<Int>,
+    validTickets: List<List<Int>>
+): MutableList<Pair<Rule, MutableList<Int>>> =  rules.map { rule ->
         rule to myTicket.indices.filter { column ->
             validTickets.map { it[column] }.all { it in rule.range1 || it in rule.range2 }
         }.toMutableList()
     }.toMutableList()
 
-    println(ruleToPossibleFields)
 
-    val reduceRuleToFields = reduceRuleToFields(ruleToPossibleFields)
+private fun getValidTickets(
+    otherTickets: List<List<Int>>,
+    rules: List<Rule>
+): List<List<Int>> = otherTickets.filter { ticket ->
+        ticket.all { field ->
+            rules.any { rule ->
+                field in rule.range1 || field in rule.range2
+            }
+        }
+    }
 
-    println(reduceRuleToFields)
-
-    val departureIndices = reduceRuleToFields.filter { it.first.name.startsWith("departure") }.map { it.second.first() }
-    println(departureIndices)
-    val reduce = myTicket.map { it.toLong() }.filterIndexed { index, _ -> departureIndices.contains(index) }.reduce { acc, i -> acc * i }
-    println(reduce)
-}
 
 fun reduceRuleToFields(
     ruleToPossibleFields: MutableList<Pair<Rule, MutableList<Int>>>,
-    reducedRuleToField: MutableList<Pair<Rule, List<Int>>> = mutableListOf<Pair<Rule, List<Int>>>()
+    reducedRuleToField: MutableList<Pair<Rule, List<Int>>> = mutableListOf()
 ): MutableList<Pair<Rule, List<Int>>> {
     val unique = ruleToPossibleFields.filter { it.second.size == 1 }
 
@@ -77,12 +70,10 @@ fun reduceRuleToFields(
 fun partOne(
     rules: List<Rule>,
     otherTickets: List<List<Int>>
-): Int {
-    return otherTickets.flatten()
+): Int = otherTickets.flatten()
         .filter { field ->
             !rules.any { rule -> field in rule.range1 || field in rule.range2
         }
     }.sum()
-}
 
 data class Rule(val name: String, val range1: IntRange, val range2: IntRange)
