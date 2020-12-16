@@ -78,14 +78,10 @@ fun partOne(
     rules: List<Rule>,
     otherTickets: List<List<Int>>
 ): Int {
-    return otherTickets.flatten().filter { field ->
-        var inAny = false
-        rules.forEach { rule ->
-            if (field in rule.range1 || field in rule.range2) {
-                inAny = true
-            }
+    return otherTickets.flatten()
+        .filter { field ->
+            !rules.any { rule -> field in rule.range1 || field in rule.range2
         }
-        !inAny
     }.sum()
 }
 
