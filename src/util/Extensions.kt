@@ -5,3 +5,5 @@ operator fun P.plus(second: P): P = Pair(this.first + second.first, this.second 
 operator fun Int.times(p: Pair<Int, Int>): Pair<Int, Int> = Pair(this * p.first, this * p.second)
 
 fun P.manhattanDistance() = abs(this.first) + abs(this.second)
+
+fun Char.asLong(): Long = this.toString().toLong()
