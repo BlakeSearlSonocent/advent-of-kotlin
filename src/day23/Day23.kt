@@ -3,48 +3,58 @@ package day23
 import util.readFileToText
 
 fun main() {
-    val cups = readFileToText("resources/Day23.txt").map { Cup(it.toString().toInt(), null) }
+    val cups = readFileToText("resources/Day23.txt").map { Cup(it.toString().toInt(), null) }.toMutableList()
     for ((i, cup) in cups.withIndex()) {
         cup.next = cups[(i + 1) % cups.size]
     }
 
+    var last = cups[8]
+    for (i in 10..1_000_000) {
+        val next = Cup(i, null)
+        cups.add(next)
+        last.next = next
+        last = next
+    }
+    last.next = cups[0]
+
+    val labelToCup = mutableMapOf<Int, Cup>()
+    var first = cups[0]
+    labelToCup[first.label] = first
+    var toAdd = first.next!!
+    while (toAdd != first) {
+        labelToCup[toAdd.label] = toAdd
+        toAdd = toAdd.next!!
+    }
+
+    play(cups, 10_000_000, labelToCup)
+    val oneCup = labelToCup[1]!!
+    println(oneCup.next!!.label.toLong() * oneCup.next!!.next!!.label.toLong())
+}
+
+private fun play(
+    cups: List<Cup>,
+    loops: Int,
+    labelToCup: MutableMap<Int, Cup>
+) {
     var current = cups[0]
 
-    repeat(100) {
-        println("1")
+    repeat(loops) {
         val next = current.next!!
         current.next = current.next!!.next!!.next!!.next
 
-        var destLabel = if (current.label - 1 == 0) 9 else current.label - 1
+        var destLabel = if (current.label - 1 == 0) cups.size else current.label - 1
         while (destLabel in listOf(next.label, next.next!!.label, next.next!!.next!!.label)) {
-            destLabel = if (destLabel == 1) 9 else destLabel - 1
+            destLabel = if (destLabel == 1) cups.size else destLabel - 1
         }
 
-        println(2)
-
-        println("Destination label: $destLabel")
-
-        var destination = next
-        while (destination.label != destLabel) destination = destination.next!!
-
-        println(3)
+        val destination = labelToCup[destLabel]!!
 
         next.next!!.next!!.next = destination.next
         destination.next = next
 
         current = current.next!!
     }
-
-    var cup = cups[0]
-    while (cup.label != 1) {
-        cup = cup.next!!
-    }
-    while (cup.next!!.label != 1) {
-        print(cup.next!!.label)
-        cup = cup.next!!
-    }
 }
-
 
 
 data class Cup(val label: Int, var next: Cup?)
