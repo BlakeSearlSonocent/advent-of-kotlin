@@ -39,18 +39,21 @@ private fun play(
     var current = cups[0]
 
     repeat(loops) {
-        val next = current.next!!
-        current.next = current.next!!.next!!.next!!.next
+        val a = current.next!!
+        val b = a.next!!
+        val c = b.next!!
+
+        current.next = c.next
 
         var destLabel = if (current.label - 1 == 0) cups.size else current.label - 1
-        while (destLabel in listOf(next.label, next.next!!.label, next.next!!.next!!.label)) {
+        while (destLabel in listOf(a.label, b.label, c.label)) {
             destLabel = if (destLabel == 1) cups.size else destLabel - 1
         }
 
         val destination = labelToCup[destLabel]!!
 
-        next.next!!.next!!.next = destination.next
-        destination.next = next
+        c.next = destination.next
+        destination.next = a
 
         current = current.next!!
     }
