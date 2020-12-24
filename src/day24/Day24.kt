@@ -1,6 +1,5 @@
 package day24
 
-import P
 import Vec
 import plus
 import util.readFileToLines
@@ -35,18 +34,39 @@ fun main() {
             }
     }
 
-    val map = instructions
+    var blackTiles = instructions
         .map { it.reduce { acc, pair -> acc + pair } }
         .groupingBy { it }.eachCount()
-        .map { Tile(it.key) to when (it.value % 2) {
-                0 -> false
-                else -> true
-            }
-        }.toMap()
+        .filterNot { it.value % 2 == 0 }
+        .map { Tile(it.key) }.toSet()
 
-    println("Part one: ${map.count { it.value }}")
+    println("Part one: ${blackTiles.size}")
+
+    repeat(100) {
+        blackTiles = doFlips(blackTiles)
+    }
+
+    println("Part two: ${blackTiles.size}")
 }
 
-class Tile(position: Vec) {
-    val neighbours = ALL_DIRECTIONS.map { it + position }
+data class Tile(private val position: Vec) {
+    val neighbours by lazy { ALL_DIRECTIONS.map { Tile(it + position) } }
 }
+
+fun doFlips(black: Set<Tile>): MutableSet<Tile> {
+    val newBlack = black.toMutableSet()
+
+    val allPotentialTiles = black.toMutableSet()
+    newBlack.forEach { allPotentialTiles.addAll(it.neighbours) }
+
+    for (tile in allPotentialTiles) {
+        val isBlack = black.contains(tile)
+        val blackNeighbours = (tile.neighbours intersect black).size
+
+        if (isBlack && (blackNeighbours == 0 || blackNeighbours > 2)) newBlack.remove(tile)
+        if (!isBlack && blackNeighbours == 2) newBlack.add(tile)
+    }
+
+    return newBlack
+}
+
