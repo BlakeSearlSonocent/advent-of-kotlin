@@ -1,10 +1,10 @@
-import util.readFileToLines
+import util.readLines
 
 val REGEX_MEM = """[0-9]+""".toRegex()
 val MEM = mutableMapOf<Long, Long>()
 
 fun main() {
-    val lines = readFileToLines("2020.14.txt")
+    val lines = readLines("2020.14.txt")
     var (andMask, orMask) = listOf(0L, 0L)
     for (s in lines) {
         if (s.take(7) == "mask = ") {

@@ -1,10 +1,10 @@
-import util.readFileToLines
+import util.readLines
 
 val REGEX_INSTRUCTION = """([A-Z])(\d+)""".toRegex()
 val BEARING_TO_VEC = mapOf(0 to Vec(0, 1), 90 to Vec(1, 0), 180 to Vec(0, -1), 270 to Vec(-1, 0))
 
 fun main() {
-    val lines = readFileToLines("2020.12.txt")
+    val lines = readLines("2020.12.txt")
     val map = lines.map { it ->
         val (first, second) = REGEX_INSTRUCTION.matchEntire(it)!!.destructured
         first to second.toInt()

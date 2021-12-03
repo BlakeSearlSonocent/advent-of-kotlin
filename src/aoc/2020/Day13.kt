@@ -1,12 +1,12 @@
 package aoc.`2020`
 
-import util.readFileToLines
+import util.readLines
 import java.awt.Desktop
 import java.net.URL
 import java.net.URLEncoder
 
 fun main() {
-    val input = readFileToLines("2020.13.txt")
+    val input = readLines("2020.13.txt")
     val arrival = input.first().toInt()
     val let = input[1].split(",")
         .filter { it != "x" }

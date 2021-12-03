@@ -1,4 +1,4 @@
-import util.readFileToLines
+import util.readLines
 
 private val REGEX_LINES = """(\w+ \w+) bags contain (.*)""".toRegex()
 private val REGEX_BAG = """(\d+) (\w+ \w+) bags?""".toRegex()
@@ -38,7 +38,7 @@ fun getContainedBagCount(map: Map<String, List<BagWithCount>>, thisBag: String):
 }
 
 fun main() {
-    val input = readFileToLines("2020.7.txt")
+    val input = readLines("2020.7.txt")
     val bagToContents = parse(input)
 
     println("Part one: ${getContainingBags(bagToContents, "shiny gold").size}")

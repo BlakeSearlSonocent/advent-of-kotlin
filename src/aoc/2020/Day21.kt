@@ -1,9 +1,9 @@
 package aoc.`2020`
 
-import util.readFileToLines
+import util.readLines
 
 fun main() {
-    val ingredientsToAllergens = parseInput(readFileToLines("2020.21.txt"))
+    val ingredientsToAllergens = parseInput(readLines("2020.21.txt"))
 
     val allergenToPotentialIngredient = mutableMapOf<String, Set<String>>()
     val ingredientToCount = mutableMapOf<String, Int>()

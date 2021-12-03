@@ -2,7 +2,7 @@ package aoc.`2020`
 
 import Vec
 import plus
-import util.readFileToLines
+import util.readLines
 
 private val East = Vec(2, 0)
 private val SouthEast = Vec(1, -1)
@@ -14,7 +14,7 @@ private val NorthEast = Vec(1, 1)
 private val ALL_DIRECTIONS = listOf(East, SouthEast, SouthWest, West, NorthWest, NorthEast)
 
 fun main() {
-    val instructions = readFileToLines("2020.24.txt").map { line ->
+    val instructions = readLines("2020.24.txt").map { line ->
         line.replace("ne", "6")
             .replace("se", "2")
             .replace("sw", "3")

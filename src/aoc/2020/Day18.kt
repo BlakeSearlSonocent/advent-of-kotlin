@@ -1,10 +1,10 @@
 package aoc.`2020`
 
 import asLong
-import util.readFileToLines
+import util.readLines
 
 fun main() {
-    val lines = readFileToLines("2020.18.txt")
+    val lines = readLines("2020.18.txt")
     println("Part one: ${lines.map { it.replace(" ", "").iterator() }.map { doMaths(it) }.sum()}")
     println("Part two: ${lines.map { it.replace(" ", "").iterator() }.map { doMathsTwo(it) }.sum()}")
 }

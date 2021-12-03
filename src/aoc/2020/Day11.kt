@@ -1,4 +1,4 @@
-import util.readFileToLines
+import util.readLines
 
 val DIRECTIONS = listOf(Vec(-1, -1), Vec(-1, 0), Vec(-1, 1), Vec(0, -1), Vec(0, 1), Vec(1, -1), Vec(1, 0), Vec(1, 1))
 var GRID: MutableMap<P, Char> = mutableMapOf()
@@ -13,7 +13,7 @@ fun main() {
 }
 
 private fun init() {
-    val lines = readFileToLines("2020.11.txt")
+    val lines = readLines("2020.11.txt")
     HEIGHT = lines.size
     WIDTH = lines.first().length
 

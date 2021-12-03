@@ -1,10 +1,10 @@
 package aoc.`2020`
 
-import util.readFileToLines
+import util.readLines
 import kotlin.math.abs
 
 fun main() {
-    var alivePoints = readFileToLines("2020.17.txt").mapIndexed { yIndex, line ->
+    var alivePoints = readLines("2020.17.txt").mapIndexed { yIndex, line ->
         line.mapIndexed { xIndex, value ->
             Point(
                 xIndex,

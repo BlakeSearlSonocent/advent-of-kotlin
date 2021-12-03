@@ -1,4 +1,4 @@
-import util.readFileToLines
+import util.readLines
 
 class RuleAndPassword(val low: Int, val high: Int, val letter: Char, val password: String) {
     fun partOne() = password.count { it == letter } in low..high
@@ -8,7 +8,7 @@ class RuleAndPassword(val low: Int, val high: Int, val letter: Char, val passwor
 fun readLine(line: String) = Regex("(\\d\\d?)-(\\d\\d?) (.): (.*)").find(line)
 
 fun main() {
-    val rulesAndPws = readFileToLines("2020.2.txt")
+    val rulesAndPws = readLines("2020.2.txt")
         .map { readLine(it) }
         .map { it!!.destructured }
         .map { (low, high, letter, pw) -> RuleAndPassword(low.toInt(), high.toInt(), letter.first(), pw) }

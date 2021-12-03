@@ -1,4 +1,4 @@
-import util.readFileToLines
+import util.readLines
 
 fun slopDescender(input: List<String>, x: Int, y: Int): Long {
     var pos = 0
@@ -15,7 +15,7 @@ fun slopDescender(input: List<String>, x: Int, y: Int): Long {
 }
 
 fun main() {
-    val input = readFileToLines("2020.3.txt")
+    val input = readLines("2020.3.txt")
 
     val partOne = slopDescender(input, 3, 1)
     val partTwo = listOf(1 to 1, 3 to 1, 5 to 1, 7 to 1, 1 to 2).map { (x, y) -> slopDescender(input, x, y) }

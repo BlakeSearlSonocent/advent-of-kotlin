@@ -1,4 +1,4 @@
-import util.readFileToLines
+import util.readLines
 
 class Passport {
     var creds: Map<String, String>
@@ -28,7 +28,7 @@ class Passport {
 private fun matchesRegex(value: String?, regex: Regex): Boolean = value?.let { regex.matches(it) } ?: false
 
 fun main() {
-    val lines = readFileToLines("2020.4.txt")
+    val lines = readLines("2020.4.txt")
     val passports = readLinesToPassports(lines)
 
     println("Part one: ${passports.count { it.validPartOne() }}")

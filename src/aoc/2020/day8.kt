@@ -1,8 +1,8 @@
 import console.Console
-import util.readFileToLines
+import util.readLines
 
 fun main() {
-    val input = readFileToLines("2020.8.txt")
+    val input = readLines("2020.8.txt")
     val console = Console(input)
 
     // Part One
