@@ -4,44 +4,32 @@ import util.readLines
 import util.toDecimal
 
 fun main() {
-    val binaries = readLines("2021.3.txt")
+    val binaries = readLines("2021.3.txt").map { line -> line.map { digit -> digit.digitToInt() } }
 
-    val gamma = binaries.fold(IntArray(binaries[0].length)) { acc, next ->
-        acc.mapIndexed { i, bit -> bit + next[i].digitToInt() }.toIntArray()
-    }.map { if (it > binaries.size / 2) 1 else 0 }.joinToString("")
+    val gamma = binaries.mostCommon()
+    val epsilon = gamma.map { 1 - it }
 
-    val epsilon = gamma.map { 1 - it.digitToInt() }.joinToString("")
+    println("Part one: ${toDecimal(epsilon.joinDigits()) * toDecimal(gamma.joinDigits())}")
 
-    println("Part one: ${toDecimal(epsilon.toLong()) * toDecimal(gamma.toLong())}")
+    val oxygen = binaries.calculateRating { x, y -> x == y }
+    val dioxide = binaries.calculateRating { x, y -> x != y }
 
-    val indices = binaries.indices
-    var oxygen = binaries.toList()
-    for (i in indices) {
-        val zeroes = oxygen.count { it[i] == '0' }
-        val ones = oxygen.count { it[i] == '1' }
+    println("Part two: ${toDecimal(oxygen.first().joinDigits()) * toDecimal(dioxide.first().joinDigits())}")
+}
 
-        oxygen = if (ones >= zeroes) {
-            oxygen.filter { it[i] == '1' }
-        } else {
-            oxygen.filter { it[i] == '0' }
-        }
+private fun List<List<Int>>.mostCommon() =
+    reduce { acc, next -> next.mapIndexed { i, bit -> bit + acc[i] } }.map { if (2 * it >= size) 1 else 0 }
 
-        if (oxygen.size == 1) break
+private fun List<Int>.joinDigits() = joinToString("").toLong()
+
+private fun List<List<Int>>.calculateRating(fn: (Int, Int) -> Boolean): MutableList<List<Int>> {
+    var rating = this.toMutableList()
+    var index = 0
+    while (rating.size > 1) {
+        val mostCommon = rating.mostCommon()[index]
+        rating.removeIf { fn(it[index], mostCommon) }
+        index++
     }
 
-    var dioxide = binaries.toList()
-    for (i in indices) {
-        val zeroes = dioxide.count { it[i] == '0' }
-        val ones = dioxide.count { it[i] == '1' }
-
-        dioxide = if (zeroes <= ones) {
-            dioxide.filter { it[i] == '0' }
-        } else {
-            dioxide.filter { it[i] == '1' }
-        }
-
-        if (dioxide.size == 1) break
-    }
-
-    println("Part two: ${toDecimal(oxygen.first().toLong()) * toDecimal(dioxide.first().toLong())}")
+    return rating
 }

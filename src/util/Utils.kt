@@ -17,3 +17,5 @@ fun toDecimal(binary: Long): Long {
 
     return decimal
 }
+
+fun Long.toDigits(): List<Int> = toString().map { it.toString().toInt() }
