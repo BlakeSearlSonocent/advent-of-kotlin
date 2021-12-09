@@ -1,5 +1,7 @@
 package aoc.`2021`
 
+import P
+import neighbours
 import util.readLines
 
 val input = readLines("2021.9.txt")
@@ -14,45 +16,44 @@ val heights = Array(width) { Array(height) { 0 } }.apply {
 }
 
 fun main() {
-    val lowPoints: List<Pair<Pair<Int, Int>, Int>> = heights.foldIndexed(emptyList()) { ix, cumulative, row ->
+    val lowPoints: List<Pair<P, Int>> = heights.foldIndexed(emptyList()) { ix, cumulative, row ->
         row.foldIndexed(cumulative) { iy, rowPoints, height ->
-            if (isLowPoint(ix, iy)) rowPoints + ((ix to iy) to height) else rowPoints
+            if (isLowPoint(ix to iy)) rowPoints + ((ix to iy) to height) else rowPoints
         }
     }
 
     println(lowPoints.sumOf { it.second + 1 })
 
     println(
-        lowPoints.map { it.first }.map { (x, y) -> findBasin(x, y).size }.sortedBy { it }.takeLast(3)
+        lowPoints.map { it.first }.map { point -> findBasin(point).size }.sortedBy { it }.takeLast(3)
             .reduce { now, next -> now * next }
     )
 }
 
-fun isLowPoint(x: Int, y: Int) =
-    getNeighbours(x, y).all { (xTest, yTest) -> heights[xTest][yTest] > heights[x][y] }
+fun isLowPoint(point: P) =
+    getNeighbours(point).all { (xTest, yTest) -> heights[xTest][yTest] > heights[point.first][point.second] }
 
-fun getNeighbours(x: Int, y: Int): List<Pair<Int, Int>> =
-    listOf((-1 to 0), (1 to 0), (0 to -1), (0 to 1)).map { (deltaX, deltaY) -> (x + deltaX) to (y + deltaY) }
-        .filter { (x, y) ->
-            x in 0 until width && y in 0 until height
-        }
+fun getNeighbours(point: P): List<Pair<Int, Int>> =
+    point.neighbours().filter { (x, y) -> x in 0 until width && y in 0 until height }
 
-fun findBasin(x: Int, y: Int, checkedPoints: MutableSet<Pair<Int, Int>> = mutableSetOf()): MutableSet<Pair<Int, Int>> {
+fun findBasin(point: P, checkedPoints: MutableSet<P> = mutableSetOf()): MutableSet<P> {
     val basin = mutableSetOf<Pair<Int, Int>>()
 
-    if (x to y in checkedPoints) return basin
+    if (point in checkedPoints) return basin
 
-    if (heights[x][y] == 9) {
-        checkedPoints += x to y
+    val (x, y) = point
+    val height = heights[x][y]
+    if (height == 9) {
+        checkedPoints += point
         return basin
     }
 
-    basin += x to y
-    checkedPoints += x to y
+    basin += point
+    checkedPoints += point
 
-    getNeighbours(x, y).forEach { (neighbourX, neighbourY) ->
-        if (heights[neighbourX][neighbourY] > heights[x][y]) {
-            basin += findBasin(neighbourX, neighbourY, checkedPoints)
+    getNeighbours(point).forEach { (neighbourX, neighbourY) ->
+        if (heights[neighbourX][neighbourY] > height) {
+            basin += findBasin(neighbourX to neighbourY, checkedPoints)
         }
     }
 
