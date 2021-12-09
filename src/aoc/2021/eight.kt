@@ -44,20 +44,22 @@ private fun figureOutOverlaps() {
     originalWiring[8] = "abcdefg"
     originalWiring[9] = "abcdfg"
 
+    val knownWirings = originalWiring.filter { it.key in setOf(1, 7, 4, 8) }
+
     val lengthSixes = originalWiring.filter { it.value.length == 6 }
     for (wiring in lengthSixes) {
-        for (otherWiring in originalWiring.filter { it.key in setOf(1, 7, 4, 8) }) {
-            val overlapSize = wiring.value.filter { it in otherWiring.value }.length
-            println("Wiring ${wiring.key} overlaps with ${otherWiring.key} with $overlapSize segments")
+        for (knownWiring in knownWirings) {
+            val overlapSize = wiring.value.filter { it in knownWiring.value }.length
+            println("Wiring ${wiring.key} overlaps with ${knownWiring.key} with $overlapSize segments")
         }
         println()
     }
 
     val lengthFives = originalWiring.filter { it.value.length == 5 }
     for (wiring in lengthFives) {
-        for (otherWiring in originalWiring.filter { it.key in setOf(1, 7, 4, 8) }) {
-            val overlapSize = wiring.value.filter { it in otherWiring.value }.length
-            println("Wiring ${wiring.key} overlaps with ${otherWiring.key} with $overlapSize segments")
+        for (knownWiring in knownWirings) {
+            val overlapSize = wiring.value.filter { it in knownWiring.value }.length
+            println("Wiring ${wiring.key} overlaps with ${knownWiring.key} with $overlapSize segments")
         }
         println()
     }
