@@ -33,7 +33,7 @@ fun main() {
 fun isLowPoint(point: P) =
     getNeighbours(point).all { (xTest, yTest) -> heights[xTest][yTest] > heights[point.first][point.second] }
 
-fun getNeighbours(point: P): List<Pair<Int, Int>> =
+private fun getNeighbours(point: P): List<Pair<Int, Int>> =
     point.neighbours().filter { (x, y) -> x in 0 until width && y in 0 until height }
 
 fun findBasin(point: P, checkedPoints: MutableSet<P> = mutableSetOf()): MutableSet<P> {
