@@ -33,24 +33,19 @@ private fun step(grid: MutableMap<P, Int>): MutableSet<P> {
     grid.forEach { (k, v) -> grid[k] = v + 1 }
 
     val flashers = mutableSetOf<P>()
-    var newFlashers = grid.filter { (k, v) -> v > 9 && k !in flashers }
 
-    while (newFlashers.isNotEmpty()) {
+    do {
+        val newFlashers = grid.filter { (k, v) -> v > 9 && k !in flashers }
+
         flashers += newFlashers.keys
 
         for (flasher in newFlashers) {
             val neighbours = getNeighbours(flasher.key, grid)
             neighbours.forEach { (k, v) -> grid[k] = v + 1 }
         }
+    } while (newFlashers.isNotEmpty())
 
-        newFlashers = grid.filter { (k, v) -> v > 9 && k !in flashers }
-    }
-
-    grid.forEach { (k, v) ->
-        if (v > 9) {
-            grid[k] = 0
-        }
-    }
+    grid.filter { (_, v) -> v > 9 }.forEach { (k, _) -> grid[k] = 0 }
 
     return flashers
 }
