@@ -3,8 +3,7 @@ package aoc.`2021`
 import util.readLines
 
 fun main() {
-    val joins = readLines("2021.12.txt").map { it.split("-") }
-        .filter { (first, second) -> first !== "end" && second !== "start" }.map { it[0] to it[1] }
+    val joins = readLines("2021.12.txt").map { it.split("-") }.map { it[0] to it[1] }
 
     val neighbours = mutableMapOf<String, Set<String>>()
     for ((first, second) in joins) {
@@ -30,18 +29,19 @@ class CaveSystem(private val system: Map<String, Set<String>>) {
         paths: MutableSet<List<String>>,
         passesSmallCaveRule: (cave: String, currentPath: List<String>) -> Boolean
     ) {
-        when {
-            start == "end" -> {
-                val finalPath = currentPath + start
-                paths += finalPath
-            }
-            (start.lowercase() == start && passesSmallCaveRule(start, currentPath)) || start.uppercase() == start -> {
-                val updatedPath = currentPath + start
-                val nextCaves = system.getValue(start).filterNot { it == "start" }
-                for (cave in nextCaves) {
-                    populatePaths(cave, updatedPath, paths, passesSmallCaveRule)
-                }
-            }
+        if (start == "end") {
+            val finalPath = currentPath + start
+            paths += finalPath
+        } else if ((
+            start.lowercase() == start && passesSmallCaveRule(
+                    start,
+                    currentPath
+                )
+            ) || start.uppercase() == start
+        ) {
+            val updatedPath = currentPath + start
+            system.getValue(start).filterNot { it == "start" }
+                .forEach { populatePaths(it, updatedPath, paths, passesSmallCaveRule) }
         }
     }
 
