@@ -22,26 +22,25 @@ fun main() {
 
 class CaveSystem(private val system: Map<Cave, Set<Cave>>) {
     private fun satisfiesPartTwoRule(cave: Cave, currentPath: List<Cave>) =
-        cave !in currentPath || currentPath.filter { it.isMinorCave() }.groupingBy { it }.eachCount()
-            .none { it.value > 1 }
-
-    private fun satisfiesPartOneRule(cave: Cave, currentPath: List<Cave>) = cave !in currentPath
-
-    private fun populatePaths(
-        passesSmallCaveRule: (cave: Cave, currentPath: List<Cave>) -> Boolean,
-        start: Cave = "start",
-        currentPath: List<Cave> = emptyList()
-    ): List<List<Cave>> {
-        if (start == "end") {
-            return listOf(currentPath + start)
-        } else if ((start.isMinorCave() && passesSmallCaveRule(start, currentPath)) || start.isMajorCave()) {
-            return system.getValue(start).filterNot { it == "start" }
-                .flatMap { populatePaths(passesSmallCaveRule, it, currentPath + start) }
+        when {
+            cave.isMajorCave() -> true
+            cave == "start" -> false
+            cave !in currentPath -> true
+            else -> currentPath.filter { it.isMinorCave() }.groupingBy { it }.eachCount().none { it.value > 1 }
         }
 
-        return emptyList()
-    }
+    private fun satisfiesPartOneRule(cave: Cave, currentPath: List<Cave>) = cave.isMajorCave() || cave !in currentPath
 
-    fun partOne() = populatePaths(::satisfiesPartOneRule)
-    fun partTwo() = populatePaths(::satisfiesPartTwoRule)
+    private fun findPaths(
+        passesCaveRules: (cave: Cave, currentPath: List<Cave>) -> Boolean,
+        currentPath: List<Cave> = listOf("start")
+    ): List<List<Cave>> =
+        if (currentPath.last() == "end") listOf(currentPath)
+        else {
+            system.getValue(currentPath.last()).filter { passesCaveRules(it, currentPath) }
+                .flatMap { findPaths(passesCaveRules, currentPath + it) }
+        }
+
+    fun partOne() = findPaths(::satisfiesPartOneRule)
+    fun partTwo() = findPaths(::satisfiesPartTwoRule)
 }
